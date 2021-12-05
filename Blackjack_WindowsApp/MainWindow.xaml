@@ -32,8 +32,8 @@
             
             <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center">Player</Label>
             <ListBox Grid.Row="1" Grid.Column="0"  x:Name="playerHand_Cards" Height="100" />
-            <Button Grid.Row="2" Grid.Column="0" x:Name="hit" Width="60" Click="playerHit" HorizontalAlignment="Left">hit</Button>
-            <Button Grid.Row="2" Grid.Column="0" x:Name="stay" Width="60" Click="playerStay" HorizontalAlignment="Right">stay</Button>
+            <Button Grid.Row="2" Grid.Column="0" x:Name="btn_Hit" Width="60" Click="playerHit" HorizontalAlignment="Left">hit</Button>
+            <Button Grid.Row="2" Grid.Column="0" x:Name="btn_Stay" Width="60" Click="playerStay" HorizontalAlignment="Right">stay</Button>
             <Label Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" >Player Hand: </Label>
             <Label Grid.Row="3" Grid.Column="0" x:Name="playerHand_Sum" HorizontalAlignment="Right">D</Label>
 

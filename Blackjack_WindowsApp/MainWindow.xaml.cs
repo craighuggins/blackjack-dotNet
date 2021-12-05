@@ -41,12 +41,12 @@ namespace Blackjack_WindowsApp
 
             if (playerHand == 21)
             {
-                MessageBox.Show("Player automatically wins!");
+                StopGame();
             }
 
             if (playerHand > 21)
             {
-                MessageBox.Show("Player Bust!");
+                StopGame();
             }
         }
 
@@ -66,17 +66,17 @@ namespace Blackjack_WindowsApp
             }
         }
 
-        private void playGame(object sender, RoutedEventArgs e)
+        private void playGame()
         {
-            int playerHand_init = 0;
+           
 
-            int dealerHand_init = 0;
+            ResetGame();
 
-            var playerHand_Card1 = GetCard(playerHand_init);    // the players first card
-            var playerHand_Card2 = GetCard(playerHand_init);    // the players second card
+            var playerHand_Card1 = GetCard(playerHand);    // the players first card
+            var playerHand_Card2 = GetCard(playerHand);    // the players second card
 
-            var dealerHand_Card1 = GetCard(dealerHand_init);    // the dealers first card
-            var dealerHand_Card2 = GetCard(dealerHand_init);    // the dealers second card
+            var dealerHand_Card1 = GetCard(dealerHand);    // the dealers first card
+            var dealerHand_Card2 = GetCard(dealerHand);    // the dealers second card
 
             playerHand_Cards.Items.Add(playerHand_Card1);
             playerHand_Cards.Items.Add(playerHand_Card2);
@@ -88,7 +88,87 @@ namespace Blackjack_WindowsApp
             dealerHand = dealerHand_Card1.Value + dealerHand_Card2.Value;
 
             HandsUpdate();
+        }
 
+        private void startGame(object sender, RoutedEventArgs e)
+        {
+            playGame();
+
+        }
+
+        private void CompareFinalHands()
+        {
+            if (playerHand > 21)
+            {
+                MessageBox.Show("Player Bust");
+            }
+
+            if ((playerHand <= 21) && (dealerHand <= 21))
+            {
+                if (playerHand > dealerHand)
+                {
+                    MessageBox.Show("The Player Wins");
+                }
+                else if (playerHand < dealerHand)
+                {
+                    MessageBox.Show("The Dealer Wins");
+                }
+                else
+                {
+                    MessageBox.Show("Its a draw");
+                }
+            }
+
+            else if ((playerHand <= 21) && (dealerHand > 21))
+            {
+                MessageBox.Show("The Player Wins");
+            }
+
+            else if ((dealerHand <= 21) && (playerHand > 21))
+            {
+                MessageBox.Show("The Dealer Wins");
+            }
+
+            else
+            {
+                MessageBox.Show("Its a draw");
+            }
+
+            MessageBoxResult result = MessageBox.Show($"Final Score - Player: {playerHand}, Dealer: {dealerHand}. \n Would you like to play again?", "Final Score", MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                playGame();
+            }
+            else
+            {
+                return;
+            }
+
+            
+
+        }
+
+        private void StopGame()
+        {
+            btn_Hit.IsEnabled = false;
+            btn_Stay.IsEnabled = false;
+            btn_play.Content = "Re-play";
+
+            CompareFinalHands();
+        }
+
+        private void ResetGame()
+        {
+            // reset the player and dealers hands to a value of 0
+            playerHand = 0;
+            dealerHand = 0;
+
+            playerHand_Cards.Items.Clear();
+            dealerHand_Cards.Items.Clear();
+
+            btn_Hit.IsEnabled = true;
+            btn_Stay.IsEnabled = true;
         }
 
 
@@ -143,6 +223,13 @@ namespace Blackjack_WindowsApp
             {
                 dealerHit();
             }
+
+            if (dealerHand > 21)
+            {
+                MessageBox.Show("Dealer Busts!");
+            }
+
+            StopGame();
         }
 
         private void playerStay(object sender, RoutedEventArgs e)
@@ -151,141 +238,5 @@ namespace Blackjack_WindowsApp
             runDealerGame();
         }
 
-        //static int DealerGame(int playerHand)
-        //{
-        //    Console.WriteLine("*** Dealer Round ***");
-
-        //    int dealerHand_init = 0;    // the player starts with a hand value of zero
-        //    int dealerHand;   // the value of the players hand
-
-        //    var dealerHand_Card1 = GetCard(dealerHand_init);    // the dealers first card
-        //    var dealerHand_Card2 = GetCard(dealerHand_init);    // the dealers second card
-
-        //    Console.WriteLine("Dealer Card 1: " + dealerHand_Card1.Key);
-        //    Console.WriteLine("Dealer Card 2: " + dealerHand_Card2.Key);
-
-        //    // players hand after receiving the initial two cards
-        //    dealerHand = dealerHand_Card1.Value + dealerHand_Card2.Value;
-
-        //    Console.WriteLine("Dealers hand: " + dealerHand);
-
-        //    if (playerHand < 21)
-        //    {
-        //        while ((dealerHand < playerHand) && (dealerHand < 21))
-        //        {
-        //            var dealerHand_NewCard = GetCard(dealerHand);
-        //            Console.WriteLine("New Card: " + dealerHand_NewCard.Key);
-        //            dealerHand += dealerHand_NewCard.Value;
-        //            Console.WriteLine("Dealer Hand: " + dealerHand);
-        //            if (dealerHand > 21)
-        //            {
-        //                Console.WriteLine("Dealer Bust!");
-        //                break;   // stop the game
-        //            }
-        //        }
-        //    }
-
-
-        //    Console.WriteLine("\n");
-
-        //    return dealerHand;
-        //}
-
-        //private int PlayerGame()
-        //{
-
-
-
-        //    int playerHand_init = 0;    // the player starts with a hand value of zero
-        //    int playerHand;   // the value of the players hand
-        //    bool stopGame = false;  // in the false state, the game will continue
-
-        //    List<String> userAllowedActions_hit = new List<String>();   // allowable hit actions
-        //    List<String> userAllowedActions_stay = new List<String>();  // allowable stay actions
-
-        //    // add the allowable user inputs for Hit
-        //    userAllowedActions_hit.Add("Hit");
-        //    userAllowedActions_hit.Add("hit");
-        //    userAllowedActions_hit.Add("HIT");
-        //    userAllowedActions_hit.Add("H");
-        //    userAllowedActions_hit.Add("h");
-
-        //    // add the allowable user inputs for Stay
-        //    userAllowedActions_stay.Add("Stay");
-        //    userAllowedActions_stay.Add("stay");
-        //    userAllowedActions_stay.Add("STAY");
-        //    userAllowedActions_stay.Add("S");
-        //    userAllowedActions_stay.Add("s");
-
-
-
-
-
-
-        //    // players hand after receiving the initial two cards
-        //    //playerHand = playerHand_Card1.Value + playerHand_Card2.Value;
-
-        //    //playerHand = 21;  // for testing
-
-
-        //    // the player automatically wins
-        //    if (playerHand == 21)
-        //    {
-        //        Console.WriteLine("Automatic WIN!");
-        //        //return playerHand;
-        //    }
-        //    else
-        //    {
-        //        // while the game has not been stopped
-        //        while (!stopGame)
-        //        {
-
-        //            // the player automatically wins
-        //            if (playerHand == 21)
-        //            {
-        //                Console.WriteLine("Automatic WIN!");
-        //                stopGame = true;
-        //                return playerHand;
-        //            }
-
-        //            Console.WriteLine("Hit or Stay?");
-        //            string userAction = Console.ReadLine();   // user input
-        //            Console.WriteLine("\n");
-
-        //            // if the user has chosen to Hit
-        //            if (userAllowedActions_hit.Contains(userAction))
-        //            {
-        //                var playerHand_NewCard = GetCard(playerHand);
-        //                Console.WriteLine("New Card: " + playerHand_NewCard.Key);
-        //                playerHand += playerHand_NewCard.Value;
-        //                Console.WriteLine("Your Hand: " + playerHand);
-        //                if (playerHand > 21)
-        //                {
-        //                    Console.WriteLine("Bust!");
-        //                    stopGame = true;   // stop the game
-        //                }
-        //            }
-
-        //            // if the user has chosen to Stay
-        //            else if (userAllowedActions_stay.Contains(userAction))
-        //            {
-        //                Console.WriteLine("Your final hand: " + playerHand);
-        //                stopGame = true;   // stop the game
-        //            }
-
-        //            else
-        //            {
-        //                Console.WriteLine("You didn't pick an available action. Try again");
-        //            }
-
-        //        }
-        //    }
-
-
-
-        //    Console.WriteLine("\n");
-
-        //    return playerHand;
-        //}
     }
 }

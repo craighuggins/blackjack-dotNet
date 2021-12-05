@@ -30,6 +30,8 @@ namespace Blackjack_WindowsApp
             InitializeComponent();
 
             ((INotifyCollectionChanged)playerHand_Cards.Items).CollectionChanged += playerHand_Cards_CollectionChanged;
+
+            ((INotifyCollectionChanged)dealerHand_Cards.Items).CollectionChanged += dealerHand_Cards_CollectionChanged;
         }
 
         private void HandsUpdate()
@@ -44,7 +46,7 @@ namespace Blackjack_WindowsApp
 
             if (playerHand > 21)
             {
-                MessageBox.Show("Bust!");
+                MessageBox.Show("Player Bust!");
             }
         }
 
@@ -56,21 +58,25 @@ namespace Blackjack_WindowsApp
             }
         }
 
+        private void dealerHand_Cards_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                HandsUpdate();
+            }
+        }
+
         private void playGame(object sender, RoutedEventArgs e)
         {
             int playerHand_init = 0;
-            
 
             int dealerHand_init = 0;
-            
 
             var playerHand_Card1 = GetCard(playerHand_init);    // the players first card
             var playerHand_Card2 = GetCard(playerHand_init);    // the players second card
 
             var dealerHand_Card1 = GetCard(dealerHand_init);    // the dealers first card
             var dealerHand_Card2 = GetCard(dealerHand_init);    // the dealers second card
-
-
 
             playerHand_Cards.Items.Add(playerHand_Card1);
             playerHand_Cards.Items.Add(playerHand_Card2);
@@ -82,7 +88,6 @@ namespace Blackjack_WindowsApp
             dealerHand = dealerHand_Card1.Value + dealerHand_Card2.Value;
 
             HandsUpdate();
-
 
         }
 
@@ -118,17 +123,32 @@ namespace Blackjack_WindowsApp
             return new KeyValuePair<string, int>(pair.Key, pair.Value);
         }
 
+        private void dealerHit()
+        {
+            var newCard = GetCard(dealerHand);
+            dealerHand += newCard.Value;
+            dealerHand_Cards.Items.Add(newCard);
+        }
+
         private void playerHit(object sender, RoutedEventArgs e)
         {
             var newCard = GetCard(playerHand);
             playerHand += newCard.Value;
             playerHand_Cards.Items.Add(newCard);
+        }
 
+        private void runDealerGame()
+        {
+            while ((dealerHand < playerHand) && (dealerHand < 21))
+            {
+                dealerHit();
+            }
         }
 
         private void playerStay(object sender, RoutedEventArgs e)
         {
-
+            btn_Hit.IsEnabled = false;
+            runDealerGame();
         }
 
         //static int DealerGame(int playerHand)
